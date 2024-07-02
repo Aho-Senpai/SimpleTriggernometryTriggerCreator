@@ -1,6 +1,6 @@
+let imageName;
+const baseURL = 'https://beta.xivapi.com/api/1';
 document.addEventListener('DOMContentLoaded', (event) => {
-    const baseURL = 'https://beta.xivapi.com/api/1';
-
     // Function to fetch and load JSON data
     async function fetchJsonData(filePath) {
         let response = await fetch(filePath);
@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         $(".info-anchor").removeClass("d-none");
 
         function createTableRow(result, type) {
+            imageName = result.fields.Name;
             return `
                 <tr>
                     <td>${result.row_id}</td>
@@ -91,7 +92,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     <td>${result.fields.Name}</td>
                     <td>${type}</td>
                     <td><img src='${baseURL}/asset/${result.fields.Icon.path}?format=png'></td>
-                    <td><img src='${baseURL}/asset/${result.fields.Icon.path_hr1}?format=png'></td>
+                    <td>
+                        <img src='${baseURL}/asset/${result.fields.Icon.path_hr1}?format=png'>
+                        <button onclick="downloadImg('${baseURL}/asset/${result.fields.Icon.path_hr1}?format=png', '${imageName}')">Download</button>
+                    </td>
                     <td>${result.fields.Icon.id}</td>
                     <td><button type="button" class="btn btn-primary" id="detailsbutton" data-url="${
                         result.row_id
@@ -124,7 +128,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             $(".info-anchor").append(`<p>No results found for ${query}</p>`);
         }
 
-        window.scrollTo(0, document.body.scrollHeight);
+        //window.scrollTo(0, document.body.scrollHeight);
     }
 
     // Event listener for the search button
@@ -137,3 +141,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 });
+function downloadImg(src, name) {
+    saveAs(`${src}`, `${name.toLowerCase().replace(/ /g, '_')}.jpg`);
+} 
